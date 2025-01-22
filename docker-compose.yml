@@ -1,0 +1,44 @@
+# Copyright Broadcom, Inc. All Rights Reserved.
+# SPDX-License-Identifier: APACHE-2.0
+
+version: '2'
+services:
+  db:
+    image: mariadb:10.6
+    container_name: moodle_db1
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # Ganti dengan password yang aman
+      MYSQL_DATABASE: moodle
+      MYSQL_USER: moodle
+      MYSQL_PASSWORD: moodlepass  # Ganti dengan password yang aman
+    # volumes:
+    #   - moodle_db:/var/lib
+    command: '--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci'
+  moodle:
+    image: bitnami/moodle:4.3
+    ports:
+      - '808:8080'
+    environment:
+      - MOODLE_DATABASE_HOST=moodle_db1
+      - MOODLE_DATABASE_PORT_NUMBER=3306
+      - MOODLE_DATABASE_USER=moodle
+      - MOODLE_DATABASE_NAME=moodle
+      - MOODLE_DATABASE_PASSWORD=moodlepass
+      - BITNAMI_DEBUG=true
+      - MOODLE_USERNAME=user
+    volumes:
+      - ./additional_moodle_scripts:/root
+
+  nginx:
+    image: nginx:1.27
+    ports:
+      - '8080:80'
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx
+
+# volumes:
+#   mariadb_data:
+#   moodle_data:
+#   moodledata_data:
