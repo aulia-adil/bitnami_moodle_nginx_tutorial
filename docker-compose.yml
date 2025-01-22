@@ -17,8 +17,6 @@ services:
     command: '--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci'
   moodle:
     image: bitnami/moodle:4.3
-    ports:
-      - '808:8080'
     environment:
       - MOODLE_DATABASE_HOST=moodle_db1
       - MOODLE_DATABASE_PORT_NUMBER=3306
